@@ -12,7 +12,7 @@ liveChannels = []
 firstRun = True
 
 def unload_cb(userdata):
-	hexchat.prnt('\00301' + __module_name__ + ' ' + __module_version__ + ' unloaded\003')
+	hexchat.prnt('\003' + __module_name__ + ' ' + __module_version__ + ' unloaded\003')
 
 def format(string, special=0):
 	if (special):
@@ -127,4 +127,4 @@ hexchat.hook_unload(unload_cb)
 
 timerHook = 0
 
-hexchat.prnt('\00301' + __module_name__ + ' ' + __module_version__ + ' loaded\003')
+hexchat.prnt('\003' + __module_name__ + ' ' + __module_version__ + ' loaded\003')
