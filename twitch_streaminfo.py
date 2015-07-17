@@ -27,7 +27,7 @@ def loadJSON(url):
 		obj = json.load(data)
 		return obj
 	except Exception, ex:
-		print ex.message
+		#print ex.message
 		return json.dumps(None)
 
 def checkmessage_cb(word, word_eol, userdata):
@@ -76,7 +76,7 @@ def uptime():
 
 		format(user.title() + ' has been streaming for ' + str(combineddate))
 	except Exception, ex:
-		print ex.message
+		#print ex.message
 		format(user.title() + ' is not streaming.')
 
 def checkStreams():
