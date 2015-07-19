@@ -104,6 +104,8 @@ def checkStreams():
 			liveChannels.append(channel)
 			format(channel.title() + ' is live!')
 			format(obj['stream']['channel']['status'] + '(' + obj['stream']['game'] + ')')
+		elif (obj['stream'] == None and channel not in liveChannels):
+			format(channel.title() + ' is offline.')
 
 def stream_cb(word, word_eol, userdata):
 	stream()
