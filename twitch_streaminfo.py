@@ -40,6 +40,10 @@ def checkmessage_cb(word, word_eol, userdata):
 
 	return hexchat.EAT_NONE
 
+def servererr_cb(word, word_eol, userdata):
+	if word[3] in ('STREAM', 'STATS'):
+		return hexchat.EAT_ALL
+
 def stream():
 	CHANNEL = hexchat.get_info('channel')
 
@@ -120,6 +124,7 @@ def checkStream_cb(word, word_eol, userdata):
 	timerHook = hexchat.hook_timer(3000, checkStreams_cb)
 
 hexchat.hook_server('PRIVMSG', checkmessage_cb)
+hexchat.hook_server('421', servererr_cb)
 
 hexchat.hook_command('STREAM', stream_cb, help='/STREAM Use in twitch.tv chats to check if the stream is online')
 hexchat.hook_command('UPTIME', uptime_cb)
