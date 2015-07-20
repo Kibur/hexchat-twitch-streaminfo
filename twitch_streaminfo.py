@@ -19,7 +19,7 @@ def format(string, special=0):
 		string = string.replace(string[:1], '')
 
 	string = '\002\035' + string
-	hexchat.prnt(string)
+	hexchat.prnt(string.encode('utf-8'))
 
 def loadJSON(url):
 	try:
