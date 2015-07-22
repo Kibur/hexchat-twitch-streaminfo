@@ -27,8 +27,10 @@ def loadJSON(url):
 		obj = json.load(data)
 		return obj
 	except Exception, ex:
-		#print ex.message
 		return json.dumps(None)
+
+def getSender(word):
+	return word.split('!')[0].replace(':', '', 1)
 
 def checkmessage_cb(word, word_eol, userdata):
 	string = ' '.join(word[0:3])
@@ -37,11 +39,20 @@ def checkmessage_cb(word, word_eol, userdata):
 	if (string == 'jtv!jtv@jtv.tmi.twitch.tv PRIVMSG ' + hexchat.get_info('nick')):
 		format(word_eol[3], special=1)
 		return hexchat.EAT_ALL
+	elif word[3] == ':\x01ACTION':
+		format('* ' + getSender(word[0]) + ' ' + word_eol[4].strip('\x01'))
+
+		return hexchat.EAT_ALL
+	elif word[3] == ':/w':
+		whisper = getSender(word[0]) + ' >> ' + word[4] + ': ' + word_eol[5]
+		hexchat.prnt('\002\00326' + whisper.encode('utf-8') + '\002\00326')
+
+		return hexchat.EAT_ALL
 
 	return hexchat.EAT_NONE
 
 def servererr_cb(word, word_eol, userdata):
-	if word[3] in ('STREAM', 'STATS'):
+	if word[3] in ('STREAM', 'STATS', 'W'):
 		return hexchat.EAT_ALL
 
 def stream():
@@ -80,7 +91,6 @@ def uptime():
 
 		format(user.title() + ' has been streaming for ' + str(combineddate))
 	except Exception, ex:
-		#print ex.message
 		format(user.title() + ' is not streaming.')
 
 def checkStreams():
@@ -123,12 +133,21 @@ def checkStreams_cb(userdata):
 def checkStream_cb(word, word_eol, userdata):
 	timerHook = hexchat.hook_timer(3000, checkStreams_cb)
 
+def whisper_cb(word, word_eol, userdata):
+	hexchat.command('PRIVMSG %s :. /w %s' % (hexchat.get_info('channel'), word_eol[1].encode('utf-8')))
+	
+	whisper = hexchat.get_info('nick') + ' >> ' + word[1] + ': ' + word_eol[2]
+	hexchat.prnt('\002\00326' + whisper.encode('utf-8') + '\002\00326')
+
+	return hexchat.EAT_ALL
+
 hexchat.hook_server('PRIVMSG', checkmessage_cb)
 hexchat.hook_server('421', servererr_cb)
 
 hexchat.hook_command('STREAM', stream_cb, help='/STREAM Use in twitch.tv chats to check if the stream is online')
 hexchat.hook_command('UPTIME', uptime_cb)
 hexchat.hook_command('JOIN', checkStream_cb)
+hexchat.hook_command('W', whisper_cb)
 
 hexchat.hook_unload(unload_cb)
 
